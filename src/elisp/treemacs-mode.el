@@ -89,6 +89,7 @@ to it will instead show a blank."
              (key-create-dir     (treemacs--find-keybind #'treemacs-create-dir))
              (key-rename         (treemacs--find-keybind #'treemacs-rename))
              (key-follow-mode    (treemacs--find-keybind #'treemacs-follow-mode))
+             (key-tagfollow-mode (treemacs--find-keybind #'treemacs-tag-follow-mode))
              (key-fwatch-mode    (treemacs--find-keybind #'treemacs-filewatch-mode))
              (key-git-mode       (treemacs--find-keybind #'treemacs-git-mode))
              (key-show-dotfiles  (treemacs--find-keybind #'treemacs-toggle-show-dotfiles))
@@ -103,26 +104,26 @@ to it will instead show a blank."
               (format
                "
 %s
-%s            │ %s              │ %s    │ %s              │ %s
+%s            │ %s              │ %s    │ %s               │ %s
 ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-%s next Line      │ %s open & close        │ %s create file │ %s follow mode    │ %s refresh
-%s prev line      │ %s open dwim           │ %s create dir  │ %s filewatch mode │ %s (re)set width
-%s next neighbour │ %s open no split       │ %s rename      │ %s git mode       │ %s copy path
-%s prev neighbour │ %s open horizontal     │                    │ %s show dotfiles  │ %s copy root
-%s go to parent   │ %s open vertical       │                    │ %s resizability   │ %s re-sort
-%s move root up   │ %s open ace            │                    │                       │ %s bookmark
-%s move root into │ %s open ace horizontal │                    │                       │
-                      │ %s open ace vertical   │                    │                       │
-                      │ %s open externally     │                    │                       │
+%s next Line      │ %s open & close        │ %s create file │ %s follow mode     │ %s refresh
+%s prev line      │ %s open dwim           │ %s create dir  │ %s tag follow mode │ %s (re)set width
+%s next neighbour │ %s open no split       │ %s rename      │ %s filewatch mode  │ %s copy path
+%s prev neighbour │ %s open horizontal     │                    │ %s git mode        │ %s copy root
+%s go to parent   │ %s open vertical       │                    │ %s show dotfiles   │ %s re-sort
+%s move root up   │ %s open ace            │                    │ %s resizabilizy    │ %s bookmark
+%s move root into │ %s open ace horizontal │                    │                        │
+                      │ %s open ace vertical   │                    │                        │
+                      │ %s open externally     │                    │                        │
 "
                title
-               column-nav               column-nodes          column-files          column-toggles          column-misc
-               (car key-next-line)      (car key-open/close)  (car key-create-file) (car key-follow-mode)   (car key-refresh)
-               (car key-prev-line)      (car key-dwim)        (car key-create-dir)  (car key-fwatch-mode)   (car key-set-width)
-               (car key-next-neighbour) (car key-open)        (car key-rename)      (car key-git-mode)      (car key-copy-path)
-               (car key-prev-neighbour) (car key-open-horiz)                        (car key-show-dotfiles) (car key-copy-root)
-               (car key-goto-parent)    (car key-open-vert)                         (car key-toggle-width)  (car key-resort)
-               (car key-root-up)        (car key-open-ace)                                                  (car key-bookmark)
+               column-nav               column-nodes          column-files          column-toggles           column-misc
+               (car key-next-line)      (car key-open/close)  (car key-create-file) (car key-follow-mode)    (car key-refresh)
+               (car key-prev-line)      (car key-dwim)        (car key-create-dir)  (car key-tagfollow-mode) (car key-set-width)
+               (car key-next-neighbour) (car key-open)        (car key-rename)      (car key-fwatch-mode)    (car key-copy-path)
+               (car key-prev-neighbour) (car key-open-horiz)                        (car key-git-mode)       (car key-copy-root)
+               (car key-goto-parent)    (car key-open-vert)                         (car key-show-dotfiles)  (car key-resort)
+               (car key-root-up)        (car key-open-ace)                          (car key-toggle-width)   (car key-bookmark)
                (car key-root-down)      (car key-open-ace-h)
                                         (car key-open-ace-v)
                                         (car key-open-ext))))
@@ -149,6 +150,7 @@ to it will instead show a blank."
               (,(cdr key-create-dir)     #'treemacs-create-dir)
               (,(cdr key-rename)         #'treemacs-rename)
               (,(cdr key-follow-mode)    #'treemacs-follow-mode)
+              (,(cdr key-tagfollow-mode) #'treemacs-tag-follow-mode)
               (,(cdr key-show-dotfiles)  #'treemacs-toggle-show-dotfiles)
               (,(cdr key-toggle-width)   #'treemacs-toggle-fixed-width)
               (,(cdr key-refresh)        #'treemacs-refresh)
@@ -200,6 +202,7 @@ to it will instead show a blank."
       (define-key map (kbd "tw")   #'treemacs-toggle-fixed-width)
       (define-key map (kbd "tg")   #'treemacs-git-mode)
       (define-key map (kbd "tf")   #'treemacs-follow-mode)
+      (define-key map (kbd "tt")   #'treemacs-tag-follow-mode)
       (define-key map (kbd "ta")   #'treemacs-filewatch-mode)
       (define-key map (kbd "w")    #'treemacs-reset-width)
       (define-key map (kbd "yy")   #'treemacs-yank-path-at-point)
