@@ -73,15 +73,50 @@ With a prefix ARG expanding and closing of nodes is recursive."
     (-when-let (b (treemacs-current-button))
       (treemacs--push-button b arg)))
   (treemacs--evade-image))
+(make-obsolete 'treemacs-push-button 'treemacs-toggle-node "Treemacs vTODO")
+
+(defun treemacs-toggle-node (&optional arg)
+  "Expand or close the current node.
+If a prefix ARG is provided the open/close process is done recursively. When
+opening directories that means that all sub-directories are opened as well. When
+opening files all their tag sections will be opened.
+Recursively closing any kind of node means that treemacs will forget about
+everything that was expanded below that node.
+
+Since tags cannot be opened or closed a goto definition action will called on
+them instead."
+  (save-excursion
+    (treemacs--do-for-button-state
+     :on-dir-node-open    (treemacs--close-dir-node btn arg)
+     :on-dir-node-closed  (treemacs--open-dir-node btn :recursive arg)
+     :on-file-node-open   (treemacs--close-tags-for-file btn arg)
+     :on-file-node-closed (treemacs--open-tags-for-file btn :recursive arg)
+     :on-tag-node-open    (treemacs--close-tag-node btn arg)
+     :on-tag-node-closed  (treemacs--open-tag-node btn :recursive arg)
+     :on-tag-node-leaf    (progn (other-window 1) (treemacs--goto-tag btn))
+     :on-nil              (treemacs--log "There is nothing to do here."))))
+
+(defun treemacs-TAB-action (&optional arg)
+  "Run the appropriate TAB action for the current node.
+
+In the default configuration this usually means to expand or close the content
+of the currently selected node. A potential prefix ARG is passed on to the
+executed action, if possible.
+
+This function's exact configuration is stored in `treemacs-TAB-actions-config'."
+  (interactive "P")
+  (-when-let (state (treemacs--prop-at-point 'state))
+    (funcall (cdr (assoc state treemacs-TAB-actions-config)) arg)
+    (treemacs--evade-image)))
 
 (defun treemacs-click-mouse1 (event)
-  "Do the same as `treemacs-push-button' when mouse1 clicking on a line.
+  "Do the same as `treemacs-toggle-node' when mouse1 clicking on a line.
 Must be bound to a mouse click, or EVENT will not be supplied."
   (interactive "e")
   (when (eq 'mouse-1 (elt event 0))
     (goto-char (posn-point (cadr event)))
     (beginning-of-line)
-    (treemacs-push-button)))
+    (treemacs-toggle-node)))
 
 (defun treemacs-uproot ()
   "Switch treemacs' root directory to current root's parent, if possible."
@@ -218,9 +253,19 @@ Determines that a button with a given STATE should lead to the execution of
 ACTION.
 
 First deletes the previous entry with key STATE from
-`treemacs-RET-actions-config'and then inserts the new tuple."
+`treemacs-RET-actions-config' and then inserts the new tuple."
   (assq-delete-all state treemacs-RET-actions-config)
   (push (cons state action) treemacs-RET-actions-config))
+
+(defun treemacs-define-TAB-action (state action)
+  "Define the behaviour of `treemacs-TAB-action'.
+Determines that a button with a given STATE should lead to the execution of
+ACTION.
+
+First deletes the previous entry with key STATE from
+`treemacs-TAB-actions-config' and then inserts the new tuple."
+  (assq-delete-all state treemacs-TAB-actions-config)
+  (push (cons state action) treemacs-TAB-actions-config))
 
 (defun treemacs-xdg-open ()
   "Open current file, using the `xdg-open' shell command."
@@ -484,15 +529,15 @@ Call `treemacs-toggle' if it is not."
     (treemacs-toggle)))
 
 (defun treemacs-push-button-select-sort (&optional arg)
-  "Same as `treemacs-push-button', but the sorting function is chosen manually.
+  "Same as `treemacs-toggle-node', but the sorting function is chosen manually.
 The sort setting is active for only a single push, its effect will be undone on
 the next refresh.
-Prefix argument ARG has the same effect as in `treemacs-push-button' - causing
+Prefix argument ARG has the same effect as in `treemacs-toggle-node' - causing
 the open/close process to work recursively."
   (interactive)
   (let* ((sort-options '(alphabetic-desc alphabetic-asc size-asc size-desc mod-time-asc mod-time-desc))
          (treemacs-sorting (intern (completing-read "Sorting: " sort-options))))
-    (treemacs-push-button arg)))
+    (treemacs-toggle-node arg)))
 (make-obsolete 'treemacs-push-button-select-sort
                #'treemacs-resort
                "Treemacs v1.12")
