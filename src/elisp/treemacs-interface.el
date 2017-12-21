@@ -116,6 +116,7 @@ Must be bound to a mouse click, or EVENT will not be supplied."
     (goto-char (posn-point (cadr event)))
     (beginning-of-line)
     (treemacs-toggle-node)))
+(make-obsolete 'treemacs-click-mouse1 #'treemacs-leftclick-action "Treemacs vTODO")
 
 (defun treemacs-uproot ()
   "Switch treemacs' root directory to current root's parent, if possible."
