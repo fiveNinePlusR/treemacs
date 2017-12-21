@@ -85,16 +85,15 @@ everything that was expanded below that node.
 
 Since tags cannot be opened or closed a goto definition action will called on
 them instead."
-  (save-excursion
-    (treemacs--do-for-button-state
-     :on-dir-node-open    (treemacs--close-dir-node btn arg)
-     :on-dir-node-closed  (treemacs--open-dir-node btn :recursive arg)
-     :on-file-node-open   (treemacs--close-tags-for-file btn arg)
-     :on-file-node-closed (treemacs--open-tags-for-file btn :recursive arg)
-     :on-tag-node-open    (treemacs--close-tag-node btn arg)
-     :on-tag-node-closed  (treemacs--open-tag-node btn :recursive arg)
-     :on-tag-node-leaf    (progn (other-window 1) (treemacs--goto-tag btn))
-     :on-nil              (treemacs--log "There is nothing to do here."))))
+  (treemacs--do-for-button-state
+   :on-dir-node-open    (treemacs--close-dir-node btn arg)
+   :on-dir-node-closed  (treemacs--open-dir-node btn :recursive arg)
+   :on-file-node-open   (treemacs--close-tags-for-file btn arg)
+   :on-file-node-closed (treemacs--open-tags-for-file btn :recursive arg)
+   :on-tag-node-open    (treemacs--close-tag-node btn arg)
+   :on-tag-node-closed  (treemacs--open-tag-node btn :recursive arg)
+   :on-tag-node-leaf    (progn (other-window 1) (treemacs--goto-tag btn))
+   :on-nil              (treemacs--log "There is nothing to do here.")))
 
 (defun treemacs-TAB-action (&optional arg)
   "Run the appropriate TAB action for the current node.
