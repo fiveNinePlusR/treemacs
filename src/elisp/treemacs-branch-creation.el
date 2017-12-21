@@ -122,6 +122,7 @@ DEPTH indicates how deep in the filetree the current button is."
                'category 'default-button
                'state 'dir-node-closed
                'abs-path path
+               'help-echo nil
                'parent parent
                'depth depth)))
 
@@ -142,6 +143,7 @@ DEPTH indicates how deep in the filetree the current button is."
                'state 'file-node-closed
                'abs-path path
                'parent parent
+               'help-echo nil
                'depth depth)))
 
 (cl-defmacro treemacs--button-open (&key button new-state new-icon open-action post-open-action immediate-insert)

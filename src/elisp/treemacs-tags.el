@@ -246,6 +246,7 @@ Set PARENT and DEPTH button properties."
                'category 'default-button
                'state 'tag-node-closed
                'parent parent
+               'help-echo nil
                'depth depth
                'index (cdr node)
                'face 'treemacs-tags-face)))
@@ -290,6 +291,7 @@ Set PARENT and DEPTH button properties."
                'category 'default-button
                'state 'tag-node
                'parent parent
+               'help-echo nil
                'depth depth
                'marker (cdr item)
                'face 'treemacs-tags-face)))
