@@ -10,6 +10,9 @@ test:
 	cask exec ert-runner --verbose --reporter ert --win && \
 	cask exec ert-runner --verbose --reporter ert --no-win
 
+run:
+	cask emacs
+
 clean:
 	rm -f ./src/elisp/*.elc
 
